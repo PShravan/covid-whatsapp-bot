@@ -31,39 +31,63 @@ def twilio_web_hook(request):
     if request.method == 'POST':
         # retrieve incoming message from POST request
         incoming_msg = request.POST['Body'].split()
+
+
         if incoming_msg[0] == 'CASES':
             # if cases in message
             if incoming_msg[1] == 'TOTAL':
-                # if total in message
-                result = cache.get('total_active')
-                if not result:
-                    result = CountryCasesReport.objects.aggregate(Sum('active'))
+                # if total in message, then retrieve from cache or database
+                if 'total_active' in cache:
+                    result = cache.get('total_active')
+
+                else:
+                    try:
+                        result = CountryCasesReport.objects.aggregate(Sum('active'))
+                        if result:
+                            cache.set('total_active', result)
+                    except:
+                        result = 'no country found'
+
             else:
-                # if country code in message
+                # if country code in message, then retrieve from cache or database
                 country_code = incoming_msg[1]
                 if country_code+'_active' in cache:
                     result = cache.get(country_code+'_active')
                 else:
-                    result = CountryCasesReportSerializer.objects.get(country__code=country_code).active
+                    try:
+                        result =CountryCasesReport.objects.get(country__code=country_code).active
+                        if result:
+                            cache.set(country_code+'_active', result)
+                    except:
+                        result = 'no country found'
+
 
         if incoming_msg[0] == 'DEATHS':
-            #if death in message
+            #if death in message, then retrieve from cache or database
             if incoming_msg[1] == 'TOTAL':
                 #if total in message
                 if 'total_deaths' in cache:
                     result = cache.get('total_deaths')
+
                 else:
                     try:
                         result = CountryCasesReport.objects.aggregate(Sum('deaths'))
+                        if result:
+                            cache.set('total_deaths', result)
                     except:
                         result = 'no country found'
+
             else:
                 country_code = incoming_msg[1]
-                if country_code+'_active' in cache:
-                    result = cache.get(country_code+'_active')
+                if country_code+'_deaths' in cache:
+                    result = cache.get(country_code+'_deaths')
+
                 else:
+                    # if country code in message, then retrieve from cache or database
                     try:
                         result =CountryCasesReport.objects.get(country__code=country_code).deaths
+                        if result:
+                            cache.set(country_code+'_deaths', result)
                     except:
                         result = 'no country found'
         else:
@@ -75,8 +99,6 @@ def twilio_web_hook(request):
     return Response(result)
 
 
-
-
 @api_view(['GET'])
 def country_covid_detail(request, code):
     # covid details of country queried
@@ -86,6 +108,5 @@ def country_covid_detail(request, code):
         except Country.DoesNotExist: 
             return Response({'message': 'Country does not exist'}, status=status.HTTP_404_NOT_FOUND) 
  
-        country_serializer = CountryCasesReportSerializer(country) 
-        print(country_serializer.data)
+        country_serializer = CountryCasesReportSerializer(country)
         return Response(country_serializer.data)

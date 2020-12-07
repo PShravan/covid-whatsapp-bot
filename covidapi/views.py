@@ -99,7 +99,7 @@ def twilio_web_hook(request):
         resp = MessagingResponse()
         msg = resp.message()
         msg.body(result)
-    return Response('hi')#str(resp))
+    return Response(str(resp))
 
 
 @api_view(['GET'])

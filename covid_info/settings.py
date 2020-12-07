@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     'covidapi',
     'rest_framework',
+    'rest_framework_xml',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +54,18 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework_xml.parsers.XMLParser',
+        'rest_framework.parsers.JSONParser'
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework_xml.renderers.XMLRenderer',
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+}
 
 ROOT_URLCONF = 'covid_info.urls'
 

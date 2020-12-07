@@ -4,10 +4,11 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 
 from rest_framework import generics
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework_xml.renderers import XMLRenderer
 from twilio.twiml.messaging_response import MessagingResponse
 
 from .models import Country, CountryCasesReport
@@ -21,8 +22,11 @@ class CountryListView(generics.ListAPIView):
     '''countries list from https://api.covid19api.com/countrie'''
     queryset = Country.objects.all()
     serializer_class = CountrySerializer
+    # renderer_classes = [XMLRenderer]
+
 
 @api_view(['POST'])
+@renderer_classes([XMLRenderer])
 def twilio_web_hook(request):
     '''
         webhook attached in twilio, receives message and sends results of queried country

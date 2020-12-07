@@ -35,7 +35,6 @@ def twilio_web_hook(request):
     if request.method == 'POST':
         # retrieve incoming message from POST request
         incoming_msg = request.POST['Body'].split()
-
         if incoming_msg[0] == 'CASES':
             # if cases in message
             if incoming_msg[1] == 'TOTAL':
@@ -46,6 +45,7 @@ def twilio_web_hook(request):
                 else:
                     try:
                         result = CountryCasesReport.objects.aggregate(Sum('active'))
+                        print(result)
                         if result:
                             cache.set('total_active', result)
                     except:
@@ -65,7 +65,7 @@ def twilio_web_hook(request):
                         result = 'no country found'
 
 
-        if incoming_msg[0] == 'DEATHS':
+        elif incoming_msg[0] == 'DEATHS':
             #if death in message, then retrieve from cache or database
             if incoming_msg[1] == 'TOTAL':
                 #if total in message

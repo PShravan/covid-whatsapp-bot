@@ -37,4 +37,4 @@ python manage.py runserver
 
 ### Country covid detail
 
-/api/country/<country-name>/ (GET)
+/api/country/country-name/ (GET)

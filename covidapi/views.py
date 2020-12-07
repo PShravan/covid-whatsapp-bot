@@ -45,7 +45,7 @@ def twilio_web_hook(request):
                 else:
                     try:
                         result = CountryCasesReport.objects.aggregate(Sum('active'))
-                        print(result)
+                        result = str(result['active__sum'])
                         if result:
                             cache.set('total_active', result)
                     except:
@@ -59,6 +59,7 @@ def twilio_web_hook(request):
                 else:
                     try:
                         result =CountryCasesReport.objects.get(country__code=country_code).active
+                        result = str(result)
                         if result:
                             cache.set(country_code+'_active', result)
                     except:
@@ -75,6 +76,7 @@ def twilio_web_hook(request):
                 else:
                     try:
                         result = CountryCasesReport.objects.aggregate(Sum('deaths'))
+                        result = str(result['deaths__sum'])
                         if result:
                             cache.set('total_deaths', result)
                     except:
@@ -89,6 +91,7 @@ def twilio_web_hook(request):
                     # if country code in message, then retrieve from cache or database
                     try:
                         result =CountryCasesReport.objects.get(country__code=country_code).deaths
+                        result = str(result)
                         if result:
                             cache.set(country_code+'_deaths', result)
                     except:
@@ -99,7 +102,7 @@ def twilio_web_hook(request):
         resp = MessagingResponse()
         msg = resp.message()
         msg.body(result)
-    return Response(str(resp))
+    return Response(resp)
 
 
 @api_view(['GET'])

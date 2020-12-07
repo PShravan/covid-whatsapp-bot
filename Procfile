@@ -1,1 +1,1 @@
-web: gunicorn movieswiki.wsgi --log-file -
+web: gunicorn covid_info.wsgi --log-file -

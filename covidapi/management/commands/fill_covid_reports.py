@@ -24,13 +24,17 @@ def populate_country_cases():
         country_name = join_country_name(country['name'])
         print(country_name)
         response = requests.get('https://api.covid19api.com/total/country/'+country_name)
+        
+        data = response.json()
+        print(country_name, response.status_code, len(data))
+
         if response.status_code == 404:
             continue
         
-        if not len(response.json()):
+        if not len(data):
             continue
 
-        last_udpated = response.json()[-1]
+        last_udpated = data[-1]
         country_instance = Country.objects.get(pk = country['pk'])
         instance, created = CountryCasesReport.objects.get_or_create(country = country_instance)
         

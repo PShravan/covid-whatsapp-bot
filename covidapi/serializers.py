@@ -10,4 +10,4 @@ class CountrySerializer(serializers.ModelSerializer):
 class CountryCasesReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = CountryCasesReport
-        fields = ('country', 'cases', 'deaths', 'status', 'date_updated')
+        fields = ('country', 'cases', 'active', 'deaths', 'date_updated')

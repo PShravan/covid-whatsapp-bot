@@ -87,4 +87,5 @@ def country_covid_detail(request, code):
             return Response({'message': 'Country does not exist'}, status=status.HTTP_404_NOT_FOUND) 
  
         country_serializer = CountryCasesReportSerializer(country) 
+        print(country_serializer.data)
         return Response(country_serializer.data)

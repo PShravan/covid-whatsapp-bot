@@ -14,7 +14,7 @@ def join_country_name(name):
 
 def populate_country_cases():
     print("\npopulating countries...\n")
-    countries = Country.objects.values('pk','name', 'code')
+    countries = Country.objects.values('pk','name', 'code', 'slug')
     total_active = 0
     total_cases = 0
     total_deaths =0
@@ -22,11 +22,10 @@ def populate_country_cases():
 
     for country in countries:
         country_name = join_country_name(country['name'])
-        print(country_name)
-        response = requests.get('https://api.covid19api.com/total/country/'+country_name)
+        response = requests.get('https://api.covid19api.com/total/country/'+country['slug'])
         
         data = response.json()
-        print(country_name, response.status_code, len(data))
+        print(country_name, 'status code:', response.status_code, 'num of reports:',len(data))
 
         if response.status_code == 404:
             continue

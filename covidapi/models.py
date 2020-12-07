@@ -6,6 +6,8 @@ class Country(models.Model):
     slug = models.SlugField()
     code = models.CharField(max_length=50, unique=True)
 
+    def __str__(self): 
+        return self.name 
 
 class CountryCasesReport(models.Model):
     country = models.ForeignKey(Country, on_delete = models.CASCADE, related_name='country_cases')
@@ -15,3 +17,6 @@ class CountryCasesReport(models.Model):
     deaths = models.IntegerField(null=True)
     recovered_cases = models.IntegerField(null=True)
     date_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self): 
+        return self.country.name 

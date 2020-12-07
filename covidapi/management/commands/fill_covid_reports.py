@@ -27,7 +27,7 @@ def populate_country_cases():
         if response.status_code == 404:
             continue
         
-        if not response.json():
+        if not len(response.json()):
             continue
 
         last_udpated = response.json()[-1]

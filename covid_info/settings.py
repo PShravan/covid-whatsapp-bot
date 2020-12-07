@@ -56,10 +56,10 @@ MIDDLEWARE = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_PARSER_CLASSES': [
-        'rest_framework_xml.parsers.XMLParser',
-        'rest_framework.parsers.JSONParser'
-    ],
+    # 'DEFAULT_PARSER_CLASSES': [
+    #     'rest_framework_xml.parsers.XMLParser',
+    #     'rest_framework.parsers.JSONParser'
+    # ],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework_xml.renderers.XMLRenderer',
         'rest_framework.renderers.JSONRenderer',

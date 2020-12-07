@@ -36,7 +36,6 @@ def twilio_web_hook(request):
         # retrieve incoming message from POST request
         incoming_msg = request.POST['Body'].split()
 
-
         if incoming_msg[0] == 'CASES':
             # if cases in message
             if incoming_msg[1] == 'TOTAL':
@@ -100,7 +99,7 @@ def twilio_web_hook(request):
         resp = MessagingResponse()
         msg = resp.message()
         msg.body(result)
-    return Response(str(resp))
+    return Response('hi')#str(resp))
 
 
 @api_view(['GET'])

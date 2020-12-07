@@ -6,6 +6,7 @@ from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import status
 from twilio.twiml.messaging_response import MessagingResponse
 
 from .models import Country, CountryCasesReport
@@ -15,16 +16,6 @@ from .serializers import CountrySerializer, CountryCasesReportSerializer
 class CountryListView(generics.ListAPIView):
     queryset = Country.objects.all()
     serializer_class = CountrySerializer
-
-
-@api_view(['POST'])
-def hook_twilio_message(request):
-    user_id = request.POST.get('id', None)
-    # Save the payment status
-    payment = Payment.objects.get(user_id=user_id)
-    payment.payment_successful = True
-    payment.save()
-    return HttpResponse('success')
 
 @api_view(['POST'])
 def twilio_web_hook(request):
@@ -58,7 +49,7 @@ def twilio_web_hook(request):
                     result = cache.get(country_code+'_active')
                 else:
                     try:
-                        result =CountryCasesReportSerializer.objects.get(country__code=country_code).deaths
+                        result =CountryCasesReport.objects.get(country__code=country_code).deaths
                     except:
                         result = 'no country found'
         
@@ -70,11 +61,6 @@ def twilio_web_hook(request):
         resp = MessagingResponse()
         msg = resp.message()
         msg.body(result)
-        if Country.objects.get(code = incoming_msg):
-            response = "*Hi! I am the Quarantine Bot*"
-            msg.body(response)
-        else:
-            x= incoming_msg:
     return Response(result)
 
 
@@ -83,13 +69,13 @@ def twilio_web_hook(request):
 @api_view(['GET'])
 def country_covid_detail(request, code):
     try: 
-        country = Country.objects.get(code=code) 
-    except Tutorial.DoesNotExist: 
-        return JsonResponse({'message': 'The tutorial does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+        country = CountryCasesReport.objects.get(country__code=code)
+    except Country.DoesNotExist: 
+        return Response({'message': 'Country does not exist'}, status=status.HTTP_404_NOT_FOUND) 
  
     if request.method == 'GET': 
-        tutorial_serializer = TutorialSerializer(tutorial) 
-        return JsonResponse(tutorial_serializer.data) 
+        country_serializer = CountryCasesReportSerializer(country) 
+        return Response(country_serializer.data) 
 
 class CountryCasesView(APIView):
     def get(self, request, format=None):
